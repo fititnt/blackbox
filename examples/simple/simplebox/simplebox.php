@@ -1,6 +1,6 @@
 <?php
 
-require_once '../../../blackbox/blackbox.php';
+require_once '/../../../blackbox/blackbox.php';
 
 class SimpleBox extends BlackBox {
 

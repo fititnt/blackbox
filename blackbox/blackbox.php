@@ -78,10 +78,12 @@ abstract class BlackBox {
 			$config = explode('.', $config);
 		}
 		$deep = count($config);
+		$conf_namespace = 'configuration_' . $this->work_namespace;
+		
 		switch ($deep) {
 			case 6:
 				if (isset(
-								$this->configuration_{$this->work_namespace}
+								$this->{$conf_namespace}
 								[$config[0]]
 								[$config[1]]
 								[$config[2]]
@@ -89,7 +91,7 @@ abstract class BlackBox {
 								[$config[4]]
 								[$config[5]]
 				)) {
-					$result = $this->configuration_{$this->work_namespace}
+					$result = $this->{$conf_namespace}
 							[$config[0]]
 							[$config[1]]
 							[$config[2]]
@@ -104,14 +106,14 @@ abstract class BlackBox {
 				break;
 			case 5:
 				if (isset(
-								$this->configuration_{$this->work_namespace}
+								$this->$conf_namespace
 								[$config[0]]
 								[$config[1]]
 								[$config[2]]
 								[$config[3]]
 								[$config[4]]
 				)) {
-					$result = $this->configuration_{$this->work_namespace}
+					$result = $this->{$conf_namespace}
 							[$config[0]]
 							[$config[1]]
 							[$config[2]]
@@ -125,13 +127,13 @@ abstract class BlackBox {
 				break;
 			case 4:
 				if (isset(
-								$this->configuration_{$this->work_namespace}
+								$this->$conf_namespace
 								[$config[0]]
 								[$config[1]]
 								[$config[2]]
 								[$config[3]]
 				)) {
-					$result = $this->configuration_{$this->work_namespace}
+					$result = $this->{$conf_namespace}
 							[$config[0]]
 							[$config[1]]
 							[$config[2]]
@@ -144,12 +146,12 @@ abstract class BlackBox {
 				break;
 			case 3:
 				if (isset(
-								$this->configuration_{$this->work_namespace}
+								$this->{$conf_namespace}
 								[$config[0]]
 								[$config[1]]
 								[$config[2]]
 				)) {
-					$result = $this->configuration_{$this->work_namespace}
+					$result = $this->{$conf_namespace}
 							[$config[0]]
 							[$config[1]]
 							[$config[2]]
@@ -161,11 +163,11 @@ abstract class BlackBox {
 				break;
 			case 2:
 				if (isset(
-								$this->configuration_{$this->work_namespace}
+								$this->{$conf_namespace}
 								[$config[0]]
 								[$config[1]]
 				)) {
-					$result = $this->configuration_{$this->work_namespace}
+					$result = $this->{$conf_namespace}
 							[$config[0]]
 							[$config[1]]
 					;
@@ -176,10 +178,10 @@ abstract class BlackBox {
 				break;
 			case 1:
 				if (isset(
-								$this->configuration_{$this->work_namespace}
+								$this->{$conf_namespace}
 								[$config[0]]
 				)) {
-					$result = $this->configuration_{$this->work_namespace}
+					$result = $this->{$conf_namespace}
 							[$config[0]]
 					;
 				} else {
@@ -192,6 +194,7 @@ abstract class BlackBox {
 				$this->error->code = 1;
 				break;
 		}
+		//var_dump($deep, $this->work_namespace, $this->configuration_{$this->work_namespace});die;
 		if($this->error->code === 1){
 			$this->error->msg = 'Error at ' . __FILE__ . ' ON ' . __METHOD__ . PHP_EOL
 					. 'Variable not found on ' . $this->work_namespace . PHP_EOL
@@ -234,7 +237,9 @@ abstract class BlackBox {
 	 * @return Object $this Suport for method chaining
 	 */
 	public function load($config, $namespace = 'default', $options = NULL) {
-		$this->configuration_{$namespace} = $config;
+		$conf_name = 'configuration_' . $namespace;
+		$this->$conf_name = $config;
+//		print_r($this);die;
 		return $this;
 	}
 
