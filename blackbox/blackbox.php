@@ -7,20 +7,29 @@ abstract class BlackBox {
 	 * 
 	 * @var array 
 	 */
-	protected $configuration_default;
+	public $configuration_default;
 
 	/**
 	 * Defaul configuration
 	 * 
 	 * @var array 
 	 */
-	protected $work_namespace;
+	public $work_namespace;
+
+	/**
+	 *
+	 * @var object 
+	 */
+	public $error;
 
 	/**
 	 * 
 	 */
 	public function __construct() {
 		$this->work_namespace = 'default';
+		$this->error = new stdClass();
+		$this->error->code = NULL;
+		$this->error->msg = NULL;
 		//
 	}
 
@@ -43,15 +52,155 @@ abstract class BlackBox {
 	 * @param String $name: name of var do delete
 	 * @return mixed
 	 */
-	public function get($name) {
-		return $this->$name;
+	public function get($config) {
+		return $this->getConfiguration($config);
 	}
 
+	/**
+	 *
+	 * @internal
+	 * Rewirte this small dragon later with some recursion
+	 *        , |\/| ,
+	 *       /| (..) |\
+	 *      /  \(oo)/  \
+	 *     /    /''\    \
+	 *    /    /\  /\    \
+	 *    \/\/`\ \/ /`\/\/
+	 *       ^^-^^^^-^^ BP
+	 * @endinternal
+	 * 
+	 * @param type $config
+	 * @param type $options
+	 * @return type 
+	 */
 	protected function getConfiguration($config, $options = NULL) {
 		if (is_string($config)) {
 			$config = explode('.', $config);
 		}
 		$deep = count($config);
+		switch ($deep) {
+			case 6:
+				if (isset(
+								$this->configuration_{$this->work_namespace}
+								[$config[0]]
+								[$config[1]]
+								[$config[2]]
+								[$config[3]]
+								[$config[4]]
+								[$config[5]]
+				)) {
+					$result = $this->configuration_{$this->work_namespace}
+							[$config[0]]
+							[$config[1]]
+							[$config[2]]
+							[$config[3]]
+							[$config[4]]
+							[$config[5]]
+					;
+				} else {
+					$result = 'ERROR. See error log';
+					$this->error->code = 1;
+				}
+				break;
+			case 5:
+				if (isset(
+								$this->configuration_{$this->work_namespace}
+								[$config[0]]
+								[$config[1]]
+								[$config[2]]
+								[$config[3]]
+								[$config[4]]
+				)) {
+					$result = $this->configuration_{$this->work_namespace}
+							[$config[0]]
+							[$config[1]]
+							[$config[2]]
+							[$config[3]]
+							[$config[4]]
+					;
+				} else {
+					$result = 'ERROR. See error log';
+					$this->error->code = 1;
+				}
+				break;
+			case 4:
+				if (isset(
+								$this->configuration_{$this->work_namespace}
+								[$config[0]]
+								[$config[1]]
+								[$config[2]]
+								[$config[3]]
+				)) {
+					$result = $this->configuration_{$this->work_namespace}
+							[$config[0]]
+							[$config[1]]
+							[$config[2]]
+							[$config[3]]
+					;
+				} else {
+					$result = 'ERROR. See error log';
+					$this->error->code = 1;
+				}
+				break;
+			case 3:
+				if (isset(
+								$this->configuration_{$this->work_namespace}
+								[$config[0]]
+								[$config[1]]
+								[$config[2]]
+				)) {
+					$result = $this->configuration_{$this->work_namespace}
+							[$config[0]]
+							[$config[1]]
+							[$config[2]]
+					;
+				} else {
+					$result = 'ERROR. See error log';
+					$this->error->code = 1;
+				}
+				break;
+			case 2:
+				if (isset(
+								$this->configuration_{$this->work_namespace}
+								[$config[0]]
+								[$config[1]]
+				)) {
+					$result = $this->configuration_{$this->work_namespace}
+							[$config[0]]
+							[$config[1]]
+					;
+				} else {
+					$result = 'ERROR. See error log';
+					$this->error->code = 1;
+				}
+				break;
+			case 1:
+				if (isset(
+								$this->configuration_{$this->work_namespace}
+								[$config[0]]
+				)) {
+					$result = $this->configuration_{$this->work_namespace}
+							[$config[0]]
+					;
+				} else {
+					$result = 'ERROR. See error log';
+					$this->error->code = 1;
+				}
+				break;
+			default:
+				$result = 'ERROR. See error log';
+				$this->error->code = 1;
+				break;
+		}
+		if($this->error->code === 1){
+			$this->error->msg = 'Error at ' . __FILE__ . ' ON ' . __METHOD__ . PHP_EOL
+					. 'Variable not found on ' . $this->work_namespace . PHP_EOL
+					. 'Requested: '
+					. json_encode($config);
+				;
+		}
+		
+		return $result;
 		//...
 	}
 
@@ -100,12 +249,12 @@ abstract class BlackBox {
 	 * @see github.com/fititnt/php-snippet/tree/master/dump
 	 * 
 	 * @param array $option Whoe function must work
-	 *						$option['method'] = 'default':
-	 *							Return simple print_r() inside <pre>
-	 *						$option['method'] = 'console':
-	 *							Return values on javascript console of browsers
-	 *						$option['die'] = 1:
-	 *							If excecution must stop after excecution
+	 * 						$option['method'] = 'default':
+	 * 							Return simple print_r() inside <pre>
+	 * 						$option['method'] = 'console':
+	 * 							Return values on javascript console of browsers
+	 * 						$option['die'] = 1:
+	 * 							If excecution must stop after excecution
 	 * 
 	 * @return Object $this Suport for method chaining
 	 */
@@ -121,7 +270,7 @@ abstract class BlackBox {
 				$html[] = 'console.groupCollapsed("' . __CLASS__ . ':' . $date . '");';
 				//@todo: add separed group (fititnt, 2012-02-15 02:03)
 				$html[] = 'console.groupCollapsed("$this");';
-				$html[] = 'console.dir(eval(' . json_encode($this) . '));';//evail is evil... And?
+				$html[] = 'console.dir(eval(' . json_encode($this) . '));'; //evail is evil... And?
 				$html[] = 'console.groupEnd()';
 				$html[] = 'console.groupEnd()';
 				$html[] = '</script>';
