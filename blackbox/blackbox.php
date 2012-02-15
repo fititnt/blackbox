@@ -79,7 +79,7 @@ abstract class BlackBox {
 		}
 		$deep = count($config);
 		$conf_namespace = 'configuration_' . $this->work_namespace;
-		
+
 		switch ($deep) {
 			case 6:
 				if (isset(
@@ -194,15 +194,14 @@ abstract class BlackBox {
 				$this->error->code = 1;
 				break;
 		}
-		//var_dump($deep, $this->work_namespace, $this->configuration_{$this->work_namespace});die;
-		if($this->error->code === 1){
+		if ($this->error->code === 1) {
 			$this->error->msg = 'Error at ' . __FILE__ . ' ON ' . __METHOD__ . PHP_EOL
 					. 'Variable not found on ' . $this->work_namespace . PHP_EOL
 					. 'Requested: '
 					. json_encode($config);
-				;
+			;
 		}
-		
+
 		return $result;
 		//...
 	}
@@ -237,6 +236,20 @@ abstract class BlackBox {
 	 * @return Object $this Suport for method chaining
 	 */
 	public function load($config, $namespace = 'default', $options = NULL) {
+		if (isset($options['type']) && $options['type'] === 'yaml') {
+			//require_once '/../3rd/sfYaml/sfYaml.php';
+			require_once '/../3rd/sfYaml/sfYamlParser.php';
+			$yaml = new sfYamlParser();
+			$config = $yaml->parse($config);
+			
+//			$array = ... //PHP array to convert to YAML
+//			require_once '/../3rd/sfYaml/sfYamlDumper.php';
+//			$dumper = new sfYamlDumper();
+//			$yaml = $dumper->dump($array, 2);
+//			print_r($yaml);die;//print yaml
+//			file_put_contents('file.yaml', $yaml);//create yaml file
+		}
+
 		$conf_name = 'configuration_' . $namespace;
 		$this->$conf_name = $config;
 //		print_r($this);die;

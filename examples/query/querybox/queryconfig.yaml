@@ -1,0 +1,2 @@
+table:
+  content: { name: '#__content', fields: [id, title, published], relation: {  } }

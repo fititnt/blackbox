@@ -1,5 +1,7 @@
 <?php
 
+//Deprecated file. Use yaml as referente
+
 $queryboxconfig = array(
 	'table' => array(
 		'content' => array(
@@ -10,9 +12,7 @@ $queryboxconfig = array(
 			),
 			'relation' => array(
 			),
-		),
-		'user' => array('_danielcorrea'
-			, 'leomiranda')
+		)
 	)
 );
 ?>
