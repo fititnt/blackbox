@@ -3,6 +3,6 @@
 require_once '../simplebox/simplebox.php';
 
 $sb = new SimpleBox();
-
-$sb->debug();
+$sb->loadSimpleBox();
+$sb->debug(array('method'=>'console'));
 ?>
